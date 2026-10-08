@@ -33,7 +33,7 @@ kotlin {
     }
     
     android {
-       namespace = "org.stephennnamani.project.shared"
+       namespace = "org.stephennnamani.pursecheck.shared"
        compileSdk = libs.versions.android.compileSdk.get().toInt()
        minSdk = libs.versions.android.minSdk.get().toInt()
     

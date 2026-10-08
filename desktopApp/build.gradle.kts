@@ -17,11 +17,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "org.stephennnamani.project.MainKt"
+        mainClass = "org.stephennnamani.pursecheck.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.stephennnamani.project"
+            packageName = "PurseCheck"
             packageVersion = "1.0.0"
         }
     }

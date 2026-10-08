@@ -20,11 +20,11 @@ dependencies {
 }
 
 android {
-    namespace = "org.stephennnamani.project"
+    namespace = "org.stephennnamani.pursecheck"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.stephennnamani.project"
+        applicationId = "org.stephennnamani.pursecheck"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

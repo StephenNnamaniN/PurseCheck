@@ -1,4 +1,4 @@
-package org.stephennnamani.project
+package org.stephennnamani.pursecheck
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

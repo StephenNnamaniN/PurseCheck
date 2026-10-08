@@ -1,4 +1,4 @@
-package org.stephennnamani.project
+package org.stephennnamani.pursecheck
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
