@@ -77,6 +77,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    packageOfResClass = "org.stephennnamani.pursecheck.resources"
+}
+
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
 }
