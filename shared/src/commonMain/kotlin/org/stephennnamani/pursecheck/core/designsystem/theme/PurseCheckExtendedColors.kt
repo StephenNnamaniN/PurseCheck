@@ -48,3 +48,26 @@ internal val purseCheckLightExtendedColors =
         savings = PurseCheckPrimitiveColors.Mint700,
         neutralAmount = PurseCheckPrimitiveColors.Neutral600,
     )
+
+internal val purseCheckDarkExtendedColors =
+    PurseCheckExtendedColors(
+        success = PurseCheckPrimitiveColors.Green500,
+        onSuccess = PurseCheckPrimitiveColors.Navy950,
+        successContainer = PurseCheckPrimitiveColors.Green700,
+        onSuccessContainer = PurseCheckPrimitiveColors.Green50,
+
+        warning = PurseCheckPrimitiveColors.Amber500,
+        onWarning = PurseCheckPrimitiveColors.Navy950,
+        warningContainer = PurseCheckPrimitiveColors.Amber700,
+        onWarningContainer = PurseCheckPrimitiveColors.Amber50,
+
+        info = PurseCheckPrimitiveColors.Blue500,
+        onInfo = PurseCheckPrimitiveColors.Navy950,
+        infoContainer = PurseCheckPrimitiveColors.Blue700,
+        onInfoContainer = PurseCheckPrimitiveColors.Blue50,
+
+        income = PurseCheckPrimitiveColors.Green500,
+        expense = PurseCheckPrimitiveColors.Red500,
+        savings = PurseCheckPrimitiveColors.Mint300,
+        neutralAmount = PurseCheckPrimitiveColors.Neutral400,
+    )

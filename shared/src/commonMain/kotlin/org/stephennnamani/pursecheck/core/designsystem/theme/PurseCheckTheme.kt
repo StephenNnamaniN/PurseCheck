@@ -1,5 +1,6 @@
 package org.stephennnamani.pursecheck.core.designsystem.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -12,13 +13,33 @@ private val LocalPurseCheckExtendedColors =
 
 @Composable
 internal fun PurseCheckTheme(
+    themeMode: ThemeMode = ThemeMode.System,
     content: @Composable () -> Unit
 ){
+    val useDarkTheme = shouldUseDarkTheme(
+        themeMode = themeMode,
+        systemInDarkTheme = isSystemInDarkTheme()
+    )
+
+    val colorScheme =
+        if (useDarkTheme) {
+            purseCheckDarkColorScheme
+        } else {
+            purseCheckLightColorScheme
+        }
+
+    val extendedColors =
+        if (useDarkTheme) {
+            purseCheckDarkExtendedColors
+        } else {
+            purseCheckLightExtendedColors
+        }
+
     CompositionLocalProvider(
-        LocalPurseCheckExtendedColors provides purseCheckLightExtendedColors
+        LocalPurseCheckExtendedColors provides extendedColors
     ){
         MaterialTheme(
-            colorScheme = purseCheckLightColorScheme,
+            colorScheme = colorScheme,
             typography = purseCheckTypography(),
             shapes = purseCheckShapes,
             content = content
