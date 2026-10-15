@@ -46,15 +46,19 @@ internal object PurseCheckPrimitiveColors {
     val Neutral1000 = Color(0xFF000000)
 
     // Supporting primitives
+    val Blue50 = Color(0xFFEFF8FF)
     val Blue500 = Color(0xFF2E90FA)
     val Blue700 = Color(0xFF175CD3)
 
+    val Green50 = Color(0xFFECFDF3)
     val Green500 = Color(0xFF12B76A)
     val Green700 = Color(0xFF027A48)
 
+    val Amber50 = Color(0xFFFFFAEB)
     val Amber500 = Color(0xFFF79009)
     val Amber700 = Color(0xFFB54708)
 
+    val Red50 = Color(0xFFFEF3F2)
     val Red500 = Color(0xFFF04438)
     val Red700 = Color(0xFFB42318)
 }

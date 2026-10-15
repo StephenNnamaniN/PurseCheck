@@ -3,6 +3,7 @@ package org.stephennnamani.pursecheck
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,41 +18,37 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogo
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogoVariant
-import org.stephennnamani.pursecheck.core.designsystem.theme.PurseCheckElevation
-import org.stephennnamani.pursecheck.core.designsystem.theme.PurseCheckSpacing
-import org.stephennnamani.pursecheck.core.designsystem.theme.purseCheckShapes
-import org.stephennnamani.pursecheck.core.designsystem.theme.purseCheckTypography
+import org.stephennnamani.pursecheck.core.designsystem.theme.PurseCheckTheme
 import org.stephennnamani.pursecheck.resources.Res
 import org.stephennnamani.pursecheck.resources.app_tagline
 
 @Composable
 @Preview
 fun PurseCheckApp() {
-    MaterialTheme(
-        typography = purseCheckTypography(),
-        shapes = purseCheckShapes
-    ) {
+    PurseCheckTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(PurseCheckSpacing.space24),
+                    .padding(PurseCheckTheme.spacing.space24),
                 contentAlignment = Alignment.Center
             ){
                 Surface(
                     shape = MaterialTheme.shapes.large,
-                    shadowElevation = PurseCheckElevation.level2
+                    color = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    shadowElevation = PurseCheckTheme.elevation.level2
                 ) {
                     Column(
                         modifier = Modifier.padding(
-                            horizontal = PurseCheckSpacing.space32,
-                            vertical = PurseCheckSpacing.space24
+                            horizontal = PurseCheckTheme.spacing.space32,
+                            vertical = PurseCheckTheme.spacing.space24
                         ),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(
-                            PurseCheckSpacing.space20
+                            PurseCheckTheme.spacing.space20
                         )
                     ){
                         PurseCheckLogo(
@@ -60,8 +57,31 @@ fun PurseCheckApp() {
                         )
                         Text(
                             text = stringResource(Res.string.app_tagline),
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(
+                                PurseCheckTheme.spacing.space16
+                            )
+                        ) {
+                            Text(
+                                text = "Income",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = PurseCheckTheme.colors.income
+                            )
+                            Text(
+                                text = "Expense",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = PurseCheckTheme.colors.expense
+                            )
+                            Text(
+                                text = "Savings",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = PurseCheckTheme.colors.savings
+                            )
+                        }
                     }
                 }
             }
