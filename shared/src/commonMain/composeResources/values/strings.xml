@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">PurseCheck</string>
     <string name="app_tagline">Your money. Clearly.</string>
+
+    <string name="appearance_title">Appearance</string>
+    <string name="appearance_description">Choose how PurseCheck looks on this device.</string>
+
+    <string name="appearance_system">System</string>
+    <string name="appearance_light">Light</string>
+    <string name="appearance_dark">Dark</string>
 </resources>

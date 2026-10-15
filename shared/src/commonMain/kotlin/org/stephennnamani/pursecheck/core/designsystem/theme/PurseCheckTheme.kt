@@ -11,6 +11,9 @@ private val LocalPurseCheckExtendedColors =
         error("PurseCheck extended colors have not been provided.")
     }
 
+private val LocalPurseCheckIsDarkTheme =
+    staticCompositionLocalOf { false }
+
 @Composable
 internal fun PurseCheckTheme(
     themeMode: ThemeMode = ThemeMode.System,
@@ -36,7 +39,8 @@ internal fun PurseCheckTheme(
         }
 
     CompositionLocalProvider(
-        LocalPurseCheckExtendedColors provides extendedColors
+        LocalPurseCheckExtendedColors provides extendedColors,
+        LocalPurseCheckIsDarkTheme provides useDarkTheme
     ){
         MaterialTheme(
             colorScheme = colorScheme,
@@ -58,4 +62,8 @@ internal object PurseCheckTheme {
 
     val elevation: PurseCheckElevation
         get() = PurseCheckElevation
+
+    val isDark: Boolean
+        @Composable
+        get() = LocalPurseCheckIsDarkTheme.current
 }
