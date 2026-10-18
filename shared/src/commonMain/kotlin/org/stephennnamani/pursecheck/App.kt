@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,9 +21,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import org.stephennnamani.pursecheck.core.adaptive.PurseCheckAdaptiveLayoutInfo
+import org.stephennnamani.pursecheck.core.adaptive.currentPurseCheckAdaptiveLayoutInfo
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogo
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogoVariant
 import org.stephennnamani.pursecheck.core.designsystem.component.AppearanceSelector
@@ -37,6 +44,8 @@ fun PurseCheckApp() {
         mutableStateOf(ThemeMode.System)
     }
 
+    val adaptiveLayoutInfo = currentPurseCheckAdaptiveLayoutInfo()
+
     PurseCheckTheme(
         themeMode = themeMode
     ) {
@@ -49,10 +58,14 @@ fun PurseCheckApp() {
                     .padding(PurseCheckTheme.spacing.space24),
                 contentAlignment = Alignment.Center
             ){
+                val scrollState = rememberScrollState()
                 Surface(
                     modifier = Modifier
                         .widthIn(max = 420.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .verticalScroll(
+                            state = scrollState
+                        ),
                     shape = MaterialTheme.shapes.large,
                     color = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurface,
@@ -113,9 +126,57 @@ fun PurseCheckApp() {
                                     top = PurseCheckTheme.spacing.space8
                                 )
                         )
+
+                        AdaptiveLayoutDiagnostics(
+                            layoutInfo = adaptiveLayoutInfo,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun AdaptiveLayoutDiagnostics(
+    layoutInfo: PurseCheckAdaptiveLayoutInfo,
+    modifier: Modifier = Modifier
+){
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                PurseCheckTheme.spacing.space16
+            ),
+            verticalArrangement = Arrangement.spacedBy(
+                PurseCheckTheme.spacing.space8
+            )
+        ){
+            Text(
+                text = "Adaptive layout",
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.semantics { heading() }
+            )
+            Text(
+                text = "Width class: ${layoutInfo.widthClass.name}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Text(
+                text = if (layoutInfo.isHeightCompact){
+                    "Heigh: Compact"
+                } else {
+                    "Height: Medium or greater"
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
