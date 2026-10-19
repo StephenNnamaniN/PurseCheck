@@ -22,10 +22,10 @@ internal enum class PurseCheckDestination(
         group = PurseCheckNavigationGroup.Secondary
     ),
     Settings(
-        group = PurseCheckNavigationGroup.Secondary
+        group = PurseCheckNavigationGroup.Utility
     ),
     Help(
-        group = PurseCheckNavigationGroup.Secondary
+        group = PurseCheckNavigationGroup.Utility
     )
 }
 
@@ -37,4 +37,9 @@ internal val primaryDestinations =
 internal  val secondaryDestinations =
     PurseCheckDestination.entries.filter {
         it.group == PurseCheckNavigationGroup.Secondary
+    }
+
+internal  val utilityDestinations =
+    PurseCheckDestination.entries.filter {
+        it.group == PurseCheckNavigationGroup.Utility
     }

@@ -22,11 +22,21 @@ class PurseCheckDestinationTest {
             listOf(
                 PurseCheckDestination.Accounts,
                 PurseCheckDestination.Analytics,
-                PurseCheckDestination.Goals,
+                PurseCheckDestination.Goals
+
+            ),
+            secondaryDestinations
+        )
+    }
+
+    @Test
+    fun utilityNavigationContainOnlyUtilityDestinations() {
+        assertEquals(
+            listOf(
                 PurseCheckDestination.Settings,
                 PurseCheckDestination.Help
             ),
-            secondaryDestinations
+            utilityDestinations
         )
     }
 }

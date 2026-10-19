@@ -24,6 +24,10 @@ internal fun PurseCheckTheme(
         systemInDarkTheme = isSystemInDarkTheme()
     )
 
+    PlatformSystemUiEffect(
+        isDarkTheme = useDarkTheme
+    )
+
     val colorScheme =
         if (useDarkTheme) {
             purseCheckDarkColorScheme

@@ -8,4 +8,23 @@
     <string name="appearance_system">System</string>
     <string name="appearance_light">Light</string>
     <string name="appearance_dark">Dark</string>
+
+    <string name="nav_overview">Overview</string>
+    <string name="nav_transactions">Transactions</string>
+    <string name="nav_budgets">Budgets</string>
+    <string name="nav_accounts">Accounts</string>
+    <string name="nav_analytics">Analytics</string>
+    <string name="nav_goals">Goals</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_help">Help &amp; About</string>
+
+    <string name="navigation_menu_content_description">Open navigation menu</string>
+    <string name="notifications_content_description">Notifications</string>
+    <string name="notifications_none">You&apos;re all caught up.</string>
+
+    <string name="demo_profile_name">Alex Morgan</string>
+    <string name="demo_profile_initials">AM</string>
+    <string name="demo_profile_subtitle">Personal finance</string>
+
+    <string name="feature_placeholder_description">Feature content will be added in a later section.</string>
 </resources>
