@@ -30,6 +30,7 @@ import org.stephennnamani.pursecheck.app.navigation.PurseCheckDestination
 import org.stephennnamani.pursecheck.app.navigation.iconResource
 import org.stephennnamani.pursecheck.app.navigation.labelResources
 import org.stephennnamani.pursecheck.app.navigation.primaryDestinations
+import org.stephennnamani.pursecheck.app.shell.component.PurseCheckTopAppBar
 import org.stephennnamani.pursecheck.core.designsystem.theme.PurseCheckTheme
 import org.stephennnamani.pursecheck.resources.Res
 import org.stephennnamani.pursecheck.resources.ic_menu
@@ -71,14 +72,14 @@ internal fun CompactPurseCheckShell(
     ){
         Scaffold(
             topBar = {
-                CompactTopAppBar(
-                    selectedDesition = selectedDestination,
+                PurseCheckTopAppBar(
+                    selectedDestination = selectedDestination,
                     onMenuClick = {
                         coroutineScope.launch {
                             drawerState.open()
                         }
                     },
-                    onNotificationsClick = {
+                    onNotificationClick = {
                         coroutineScope.launch {
                             snackbarHostState.showSnackbar(
                                 message = onNotificationMessage
@@ -110,50 +111,6 @@ internal fun CompactPurseCheckShell(
         }
     }
 
-}
-
-
-@Composable
-private fun CompactTopAppBar(
-    selectedDesition: PurseCheckDestination,
-    onMenuClick: () -> Unit,
-    onNotificationsClick: () -> Unit
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(selectedDesition.labelResources),
-                style = MaterialTheme.typography.titleLarge
-                )
-        },
-        navigationIcon = {
-            IconButton(onClick = onMenuClick
-            ){
-                Icon(
-                    painter = painterResource(Res.drawable.ic_menu),
-                    contentDescription = stringResource(
-                        Res.string.navigation_menu_content_description
-                    )
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = onNotificationsClick
-            ){
-                Icon(
-                    painter = painterResource(Res.drawable.ic_notifications),
-                    contentDescription = stringResource(Res.string.notifications_content_description)
-                )
-            }
-
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            titleContentColor = MaterialTheme.colorScheme.onBackground,
-            navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-            actionIconContentColor = MaterialTheme.colorScheme.onBackground
-        )
-    )
 }
 
 @Composable

@@ -31,6 +31,7 @@ import org.stephennnamani.pursecheck.app.navigation.PurseCheckShellLayout
 import org.stephennnamani.pursecheck.app.navigation.labelResources
 import org.stephennnamani.pursecheck.app.navigation.toShellLayout
 import org.stephennnamani.pursecheck.app.shell.compact.CompactPurseCheckShell
+import org.stephennnamani.pursecheck.app.shell.medium.MediumPurseCheckShell
 import org.stephennnamani.pursecheck.core.adaptive.PurseCheckAdaptiveLayoutInfo
 import org.stephennnamani.pursecheck.core.adaptive.currentPurseCheckAdaptiveLayoutInfo
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogo
@@ -75,7 +76,23 @@ fun PurseCheckApp() {
                     )
                 }
 
-            PurseCheckShellLayout.Medium,
+            PurseCheckShellLayout.Medium -> {
+                MediumPurseCheckShell(
+                    selectedDestination = selectedDestination,
+                    onDestinationSelected = { destination ->
+                        selectedDestination = destination
+                    }
+                ){
+                    PurseCheckDestinationPlaceholder(
+                        destination = selectedDestination,
+                        themeMode = themeMode,
+                        onThemeModeSelected = { selectedMode ->
+                            themeMode = selectedMode
+                        }
+                    )
+                }
+            }
+
             PurseCheckShellLayout.Expanded,
                 -> {
                 Surface(
