@@ -27,4 +27,7 @@
     <string name="demo_profile_subtitle">Personal finance</string>
 
     <string name="feature_placeholder_description">Feature content will be added in a later section.</string>
+
+    <string name="navigation_expand">Expand navigation</string>
+    <string name="navigation_collapse">Collapse navigation</string>
 </resources>

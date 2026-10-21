@@ -31,6 +31,7 @@ import org.stephennnamani.pursecheck.app.navigation.PurseCheckShellLayout
 import org.stephennnamani.pursecheck.app.navigation.labelResources
 import org.stephennnamani.pursecheck.app.navigation.toShellLayout
 import org.stephennnamani.pursecheck.app.shell.compact.CompactPurseCheckShell
+import org.stephennnamani.pursecheck.app.shell.expanded.ExpandedPurseCheckShell
 import org.stephennnamani.pursecheck.app.shell.medium.MediumPurseCheckShell
 import org.stephennnamani.pursecheck.core.adaptive.PurseCheckAdaptiveLayoutInfo
 import org.stephennnamani.pursecheck.core.adaptive.currentPurseCheckAdaptiveLayoutInfo
@@ -53,6 +54,8 @@ fun PurseCheckApp() {
     var selectedDestination by remember {
         mutableStateOf(PurseCheckDestination.Overview)
     }
+
+    var wideRailExpanded by remember { mutableStateOf(false) }
 
     val adaptiveLayoutInfo = currentPurseCheckAdaptiveLayoutInfo()
 
@@ -93,94 +96,26 @@ fun PurseCheckApp() {
                 }
             }
 
-            PurseCheckShellLayout.Expanded,
-                -> {
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(PurseCheckTheme.spacing.space24),
-                        contentAlignment = Alignment.Center
-                    ){
-                        val scrollState = rememberScrollState()
-                        Surface(
-                            modifier = Modifier
-                                .widthIn(max = 420.dp)
-                                .fillMaxWidth()
-                                .verticalScroll(
-                                    state = scrollState
-                                ),
-                            shape = MaterialTheme.shapes.large,
-                            color = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                            shadowElevation = PurseCheckTheme.elevation.level2
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(
-                                    horizontal = PurseCheckTheme.spacing.space32,
-                                    vertical = PurseCheckTheme.spacing.space24
-                                ),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(
-                                    PurseCheckTheme.spacing.space20
-                                )
-                            ){
-                                PurseCheckLogo(
-                                    variant = PurseCheckLogoVariant.Horizontal,
-                                    modifier = Modifier
-                                        .width(280.dp)
-                                        .fillMaxWidth()
-                                )
-                                Text(
-                                    text = stringResource(Res.string.app_tagline),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(
-                                        PurseCheckTheme.spacing.space16
-                                    )
-                                ) {
-                                    Text(
-                                        text = "Income",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = PurseCheckTheme.colors.income
-                                    )
-                                    Text(
-                                        text = "Expense",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = PurseCheckTheme.colors.expense
-                                    )
-                                    Text(
-                                        text = "Savings",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = PurseCheckTheme.colors.savings
-                                    )
-                                }
-
-                                AppearanceSelector(
-                                    selectedMode = themeMode,
-                                    onModeSelected = { selectedMode ->
-                                        themeMode = selectedMode
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            top = PurseCheckTheme.spacing.space8
-                                        )
-                                )
-
-                                AdaptiveLayoutDiagnostics(
-                                    layoutInfo = adaptiveLayoutInfo,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                        }
+            PurseCheckShellLayout.Expanded -> {
+                ExpandedPurseCheckShell(
+                    selectedDestination = selectedDestination,
+                    railExpanded = wideRailExpanded,
+                    onDestinationSelected = { destination ->
+                        selectedDestination = destination
+                    },
+                    onRailExpandedChange = { expanded ->
+                        wideRailExpanded = expanded
                     }
+                ){
+                    PurseCheckDestinationPlaceholder(
+                        destination = selectedDestination,
+                        themeMode = themeMode,
+                        onThemeModeSelected = { selectedMode ->
+                            themeMode = selectedMode
+                        }
+                    )
                 }
+
             }
 
         }
@@ -225,48 +160,6 @@ private fun PurseCheckDestinationPlaceholder(
     }
 }
 
-@Composable
-private fun AdaptiveLayoutDiagnostics(
-    layoutInfo: PurseCheckAdaptiveLayoutInfo,
-    modifier: Modifier = Modifier
-){
-    Surface(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = MaterialTheme.colorScheme.onSurface
-    ) {
-        Column(
-            modifier = Modifier.padding(
-                PurseCheckTheme.spacing.space16
-            ),
-            verticalArrangement = Arrangement.spacedBy(
-                PurseCheckTheme.spacing.space8
-            )
-        ){
-            Text(
-                text = "Adaptive layout",
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.semantics { heading() }
-            )
-            Text(
-                text = "Width class: ${layoutInfo.widthClass.name}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Text(
-                text = if (layoutInfo.isHeightCompact){
-                    "Heigh: Compact"
-                } else {
-                    "Height: Medium or greater"
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
 
 @Preview
 @Composable
