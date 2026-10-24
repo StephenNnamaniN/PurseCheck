@@ -1,6 +1,7 @@
 package org.stephennnamani.pursecheck.app.shell.expanded
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
@@ -33,8 +33,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -46,6 +52,7 @@ import org.stephennnamani.pursecheck.app.navigation.primaryDestinations
 import org.stephennnamani.pursecheck.app.navigation.secondaryDestinations
 import org.stephennnamani.pursecheck.app.navigation.utilityDestinations
 import org.stephennnamani.pursecheck.app.shell.PurseCheckShellDimensions
+import org.stephennnamani.pursecheck.app.shell.component.rememberNavigationFocusRequesters
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogo
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogoVariant
 import org.stephennnamani.pursecheck.core.designsystem.theme.PurseCheckTheme
@@ -62,6 +69,10 @@ internal fun WidePurseCheckRail(
     onExpandedChange: (Boolean) -> Unit,
     onDestinationSelected: (PurseCheckDestination) -> Unit
 ){
+
+    val destinations = PurseCheckDestination.entries
+    val focusRequesters = rememberNavigationFocusRequesters(destinations)
+
     val railWidth by animateDpAsState(
         targetValue =
             if (expanded){
@@ -75,7 +86,15 @@ internal fun WidePurseCheckRail(
     Surface(
         modifier = Modifier
             .fillMaxHeight()
-            .width(railWidth),
+            .width(railWidth)
+            .focusProperties {
+                onEnter = {
+                    focusRequesters
+                        .getValue(selectedDestination)
+                        .requestFocus()
+                }
+            }
+            .focusGroup(),
         color = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
@@ -118,6 +137,7 @@ internal fun WidePurseCheckRail(
                         destination = destination,
                         selected = selectedDestination == destination,
                         expanded = expanded,
+                        focusRequester = focusRequesters.getValue(destination),
                         onClick = {
                             onDestinationSelected(destination)
                         }
@@ -133,6 +153,7 @@ internal fun WidePurseCheckRail(
                         destination = destination,
                         selected = selectedDestination == destination,
                         expanded = expanded,
+                        focusRequester = focusRequesters.getValue(destination),
                         onClick = {
                             onDestinationSelected(destination)
                         }
@@ -155,6 +176,7 @@ internal fun WidePurseCheckRail(
                             destination = destination,
                             selected = selectedDestination == destination,
                             expanded = expanded,
+                            focusRequester = focusRequesters.getValue(destination),
                             onClick = {
                                 onDestinationSelected(destination)
                             }
@@ -185,7 +207,7 @@ private fun WideRailHeader(
                 variant = PurseCheckLogoVariant.Horizontal,
                 modifier = Modifier
                     .weight(1f)
-                    .height(PurseCheckTheme.spacing.space32)
+                    .height(PurseCheckTheme.spacing.space40)
             )
 
             Spacer(
@@ -272,6 +294,7 @@ private fun WideRailDestinationItem(
     destination: PurseCheckDestination,
     selected: Boolean,
     expanded: Boolean,
+    focusRequester: FocusRequester,
     onClick: () -> Unit
 ) {
     val label = stringResource(destination.labelResources)
@@ -302,6 +325,9 @@ private fun WideRailDestinationItem(
                 label = label,
                 selected = selected,
                 expanded = false,
+                modifier = Modifier.focusRequester(
+                    focusRequester
+                ),
                 onClick = onClick
             )
         }
@@ -314,7 +340,8 @@ private fun WideRailDestinationSurface(
     label: String,
     selected: Boolean,
     expanded: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val containerColor =
         if (selected) {
@@ -329,27 +356,32 @@ private fun WideRailDestinationSurface(
         } else {
             MaterialTheme.colorScheme.onSurfaceVariant
         }
+    val itemModifier =
+        if (expanded) {
+            modifier.fillMaxWidth()
+                .heightIn(
+                    min = PurseCheckShellDimensions.NavigationItemMinSize
+                )
+                .semantics(
+                    mergeDescendants = true
+                ){
+                    role = Role.Tab
+                }
 
+        } else {
+            Modifier.size(PurseCheckShellDimensions.NavigationItemMinSize)
+                .semantics(
+                    mergeDescendants = true
+                ){
+                    role = Role.Tab
+                    contentDescription = label
+                }
+
+        }
     Surface(
-        modifier =
-            if (expanded) {
-                Modifier.fillMaxWidth()
-                    .heightIn(
-                        min = PurseCheckShellDimensions.NavigationItemMinSize
-                    )
-                    .selectable(
-                        selected = selected,
-                        onClick = onClick,
-                        role = Role.Tab
-                    )
-            } else {
-                Modifier.size(PurseCheckShellDimensions.NavigationItemMinSize)
-                    .selectable(
-                        selected = selected,
-                        onClick = onClick,
-                        role = Role.Tab
-                    )
-            },
+        selected = selected,
+        onClick = onClick,
+        modifier = itemModifier,
         shape = MaterialTheme.shapes.medium,
         color = containerColor,
         contentColor = contentColor
@@ -369,12 +401,7 @@ private fun WideRailDestinationSurface(
         ){
             Icon(
                 painter = painterResource(destination.iconResource),
-                contentDescription =
-                    if (expanded) {
-                        null
-                    } else {
-                        label
-                    }
+                contentDescription = null
             )
             if (expanded) {
                 Spacer(

@@ -1,5 +1,6 @@
 package org.stephennnamani.pursecheck.app.shell.medium
 
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,11 @@ import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.stephennnamani.pursecheck.app.navigation.PurseCheckDestination
@@ -30,6 +36,7 @@ import org.stephennnamani.pursecheck.app.navigation.labelResources
 import org.stephennnamani.pursecheck.app.navigation.primaryDestinations
 import org.stephennnamani.pursecheck.app.navigation.secondaryDestinations
 import org.stephennnamani.pursecheck.app.navigation.utilityDestinations
+import org.stephennnamani.pursecheck.app.shell.component.rememberNavigationFocusRequesters
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogo
 import org.stephennnamani.pursecheck.core.designsystem.brand.PurseCheckLogoVariant
 import org.stephennnamani.pursecheck.core.designsystem.theme.PurseCheckTheme
@@ -39,7 +46,19 @@ internal  fun MediumPurseCheckRail(
     selectedDestination: PurseCheckDestination,
     onDestinationSelected: (PurseCheckDestination) -> Unit
 ){
+    val destinations = PurseCheckDestination.entries
+    val focusRequesters = rememberNavigationFocusRequesters(destinations)
+
     NavigationRail(
+        modifier = Modifier
+            .focusProperties {
+                onEnter = {
+                    focusRequesters
+                        .getValue(selectedDestination)
+                        .requestFocus()
+                }
+            }
+            .focusGroup(),
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
         header = {
@@ -67,6 +86,7 @@ internal  fun MediumPurseCheckRail(
         ){
             primaryDestinations.forEach { destination ->
                 MediumRailDestinationItem(
+                    focusRequester = focusRequesters.getValue(destination),
                     destination = destination,
                     selected = selectedDestination == destination,
                     onClick = {
@@ -79,6 +99,7 @@ internal  fun MediumPurseCheckRail(
 
             secondaryDestinations.forEach { destination ->
                 MediumRailDestinationItem(
+                    focusRequester = focusRequesters.getValue(destination),
                     destination = destination,
                     selected = selectedDestination == destination,
                     onClick = {
@@ -91,6 +112,7 @@ internal  fun MediumPurseCheckRail(
 
             utilityDestinations.forEach { destination ->
                 MediumRailDestinationItem(
+                    focusRequester = focusRequesters.getValue(destination),
                     destination = destination,
                     selected = selectedDestination == destination,
                     onClick = {
@@ -110,6 +132,7 @@ internal  fun MediumPurseCheckRail(
 private fun MediumRailDestinationItem(
     destination: PurseCheckDestination,
     selected: Boolean,
+    focusRequester: FocusRequester,
     onClick: () -> Unit
 ) {
     val label = stringResource(destination.labelResources)
@@ -127,12 +150,17 @@ private fun MediumRailDestinationItem(
         state = rememberTooltipState()
     ){
         NavigationRailItem(
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .semantics {
+                    contentDescription = label
+                },
             selected = selected,
             onClick = onClick,
             icon = {
                 Icon(
                     painter = painterResource(destination.iconResource),
-                    contentDescription = label
+                    contentDescription = null
                 )
             },
             colors = NavigationRailItemDefaults.colors(

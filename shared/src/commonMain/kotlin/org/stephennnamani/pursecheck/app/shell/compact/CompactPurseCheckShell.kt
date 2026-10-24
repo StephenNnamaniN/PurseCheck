@@ -1,28 +1,20 @@
 package org.stephennnamani.pursecheck.app.shell.compact
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.focusGroup
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -30,14 +22,9 @@ import org.stephennnamani.pursecheck.app.navigation.PurseCheckDestination
 import org.stephennnamani.pursecheck.app.navigation.iconResource
 import org.stephennnamani.pursecheck.app.navigation.labelResources
 import org.stephennnamani.pursecheck.app.navigation.primaryDestinations
-import org.stephennnamani.pursecheck.app.shell.component.PurseCheckTopAppBar
+import org.stephennnamani.pursecheck.app.shell.component.PurseCheckWorkspaceScaffold
+import org.stephennnamani.pursecheck.app.shell.component.rememberNavigationFocusRequesters
 import org.stephennnamani.pursecheck.core.designsystem.theme.PurseCheckTheme
-import org.stephennnamani.pursecheck.resources.Res
-import org.stephennnamani.pursecheck.resources.ic_menu
-import org.stephennnamani.pursecheck.resources.ic_notifications
-import org.stephennnamani.pursecheck.resources.navigation_menu_content_description
-import org.stephennnamani.pursecheck.resources.notifications_content_description
-import org.stephennnamani.pursecheck.resources.notifications_none
 
 @Composable
 internal fun CompactPurseCheckShell(
@@ -49,11 +36,7 @@ internal fun CompactPurseCheckShell(
         initialValue = DrawerValue.Closed
     )
 
-    val snackbarHostState = remember { SnackbarHostState() }
-
     val coroutineScope = rememberCoroutineScope()
-
-    val onNotificationMessage = stringResource(Res.string.notifications_none)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -70,44 +53,21 @@ internal fun CompactPurseCheckShell(
             )
         }
     ){
-        Scaffold(
-            topBar = {
-                PurseCheckTopAppBar(
-                    selectedDestination = selectedDestination,
-                    onMenuClick = {
-                        coroutineScope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onNotificationClick = {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = onNotificationMessage
-                            )
-                        }
-                    }
-                )
+        PurseCheckWorkspaceScaffold(
+            selectedDestination = selectedDestination,
+            onMenuClick = {
+                coroutineScope.launch {
+                    drawerState.open()
+                }
             },
             bottomBar = {
                 CompactBottomNavigation(
-                    selectedDesition = selectedDestination,
+                    selectedDestination = selectedDestination,
                     onDestinationSelected = onDestinationSelected
                 )
-            },
-            snackbarHost = {
-                SnackbarHost(hostState = snackbarHostState)
-            },
-            contentColor = MaterialTheme.colorScheme.background
-        ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .consumeWindowInsets(innerPadding)
-            ){
-                content()
             }
-
+        ){
+            content()
         }
     }
 
@@ -115,16 +75,39 @@ internal fun CompactPurseCheckShell(
 
 @Composable
 private fun CompactBottomNavigation(
-    selectedDesition: PurseCheckDestination,
+    selectedDestination: PurseCheckDestination,
     onDestinationSelected: (PurseCheckDestination) -> Unit
 ) {
+    val focusRequesters = rememberNavigationFocusRequesters(
+        primaryDestinations
+    )
+
+    val focusEntryDestination =
+        if (selectedDestination in primaryDestinations) {
+            selectedDestination
+        } else {
+            primaryDestinations.first()
+        }
+
     NavigationBar(
+        modifier = Modifier
+            .focusProperties{
+                onEnter = {
+                    focusRequesters
+                        .getValue(focusEntryDestination)
+                        .requestFocus()
+                }
+            }
+            .focusGroup(),
         containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = PurseCheckTheme.elevation.level0
     ) {
         primaryDestinations.forEach { destination ->
             NavigationBarItem(
-                selected = selectedDesition == destination,
+                modifier = Modifier.focusRequester(
+                    focusRequesters.getValue(destination)
+                ),
+                selected = selectedDestination == destination,
                 onClick = { onDestinationSelected(destination) },
                 icon = {
                     Icon(
